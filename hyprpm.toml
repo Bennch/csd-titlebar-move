@@ -1,0 +1,12 @@
+[repository]
+name = "csd-titlebar-move"
+authors = ["khalid151"]
+
+[csd-titlebar-move]
+description = "A plugin to move CSD GTK applications by their titlebar"
+authors = ["khalid151"]
+build = [
+    "make",
+]
+output = "csd-titlebar-move.so"
+
