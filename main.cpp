@@ -50,7 +50,12 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
         break;
     }
 
-    if (!g_pCXDGToplevelResConstructor) {
+    g_pMouseBtnCallback = HyprlandAPI::registerCallbackDynamic(
+        PHANDLE, "mouseButton", [&](void* self, SCallbackInfo& info, std::any param) { onClick(info, std::any_cast<IPointer::SButtonEvent>(param)); });
+
+    bool success = g_pCXDGToplevelResConstructor && g_pMouseBtnCallback;
+
+    if (!success) {
         HyprlandAPI::addNotification(PHANDLE,
                                      "[csd-titlebar-move] Failure in initialization: Failed to find "
                                      "required hook fns",
@@ -60,7 +65,7 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
 
     g_pCXDGToplevelResConstructor->hook();
 
-    if (g_pCXDGToplevelResConstructor)
+    if (success)
         HyprlandAPI::addNotification(PHANDLE, "[csd-titlebar-move] Initialized successfully!", CHyprColor{0.2, 1.0, 0.2, 1.0}, 5000);
     else {
         HyprlandAPI::addNotification(PHANDLE, "[csd-titlebar-move] Failure in initialization (hook failed)!", CHyprColor{1.0, 0.2, 0.2, 1.0}, 5000);
