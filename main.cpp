@@ -9,17 +9,17 @@
 void onClick(SCallbackInfo& info, IPointer::SButtonEvent e) {
     if (e.state == WL_POINTER_BUTTON_STATE_RELEASED)
         if (!info.cancelled)
-            g_pKeybindManager->m_mDispatchers["mouse"]("0movewindow");
+            g_pKeybindManager->m_dispatchers["mouse"]("0movewindow");
 }
 
 void hkCXDGToplevelResConstructor(CXDGToplevelResource* thisptr, SP<CXdgToplevel> resource, SP<CXDGSurfaceResource> owner) {
-    (*(origCXDGToplevelResConstructor)g_pCXDGToplevelResConstructor->m_pOriginal)(thisptr, resource, owner);
+    (*(origCXDGToplevelResConstructor)g_pCXDGToplevelResConstructor->m_original)(thisptr, resource, owner);
 
     resource->setMove([thisptr](CXdgToplevel* t, wl_resource* seat, uint32_t serial) {
         // treat it as down event, moustButton event is used for up event only
-        if (auto window = thisptr->window.lock()) {
+        if (auto window = thisptr->m_window.lock()) {
             g_pCompositor->focusWindow(window);
-            g_pKeybindManager->m_mDispatchers["mouse"]("1movewindow");
+            g_pKeybindManager->m_dispatchers["mouse"]("1movewindow");
         }
     });
 }
